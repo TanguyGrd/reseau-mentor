@@ -20,51 +20,64 @@
 
 `ssh-keygen -t rsa`
 
-`ssh-copy-id utilisateur@ip`
+`ssh-copy-id Patron@10.0.2.15`
 
 # Partie 2 : Premier test réseau (4 points)
 
 `sudo hostnamectl set-hostname etudiant`
 `sudo hostnamectl set-hostname mentor`    
+`sudo cat /etc/sysconfig/network-scripts/ifcfg-enp0s3`
 
 `sudo vi /etc/sysconfig/network-scripts/ifcfg-enp0s3`
 
 # pour etudiant 
 
+``TYPE=Ethernet`
 `BOOTPROTO=static`
-`IPADDR=192.168.56.11`
+`IPADDR=10.1.1.10`
 `NETMASK=255.255.255.0`
+`ONBOOT=yes`
+
 
 # pour mentor
+
+`TYPE=Ethernet`
 `BOOTPROTO=static`
-`IPADDR=192.168.56.12`
+`IPADDR=10.1.1.11`
 `NETMASK=255.255.255.0`
+`ONBOOT=yes`
 
+`ping 10.1.1.11  etudiant a mentor`
 
-`sudo systemctl restart network`
-
-`ping 192.168.56.12  etudiant a mentor`
-
-`ping 192.168.56.11 mentor a etudiant`
+`ping 10.1.1.10 mentor a etudiant`
 
 
 ## Partie 3 : Un petit peu de routage (6 points)
-
+Pour routeur :
+Supprimez la carte réseau Host-Only des VM mentor et etudiant.
+Configurez les interfaces réseau pour routeur :
+LAN 1:
 `sudo vi /etc/sysconfig/network-scripts/ifcfg-enp0s3`
 
+`TYPE=Ethernet`
 `BOOTPROTO=static`
-`IPADDR=192.168.56.1`
+`IPADDR=10.1.1.254`
 `NETMASK=255.255.255.0`
+`ONBOOT=yes`
+
+LAN 2: 
 
 `sudo vi /etc/sysconfig/network-scripts/ifcfg-enp0s8`
 
+`TYPE=Ethernet`
 `BOOTPROTO=static`
-`IPADDR=192.168.57.1`
+`IPADDR=10.1.2.254`
 `NETMASK=255.255.255.0`
+`ONBOOT=yes`
 
 `sudo systemctl restart network`
 
-`Configurer le routeur pour qu'il puisse faire le lien entre les deux réseaux`
+Configurer le routeur pour qu'il puisse faire le lien entre les deux réseaux
 
 `sudo vi /etc/sysctl.conf`
 
@@ -72,11 +85,18 @@
 
 `sudo sysctl -p`
 
-`Tester la connectivité entre les machines`
+Testez la connectivité entre les machine
 
-`ping 192.168.56.1  "etudiant" vers "routeur" `
-`ping 192.168.57.1  "mentor" vers "routeur"`
+`ping 10.1.2.254`
+`ping 10.1.1.254`
+`ping 10.1.1.11`
+
+Tester la connectivité entre les machines
+
+`ping 10.1.1.254  "etudiant" vers "routeur" `
+`ping 10.1.1.254  "mentor" vers "routeur"`
 `ping 192.168.57.12  "etudiant" vers "mentor"`
+
 
 
 
