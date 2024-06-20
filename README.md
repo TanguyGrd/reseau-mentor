@@ -32,7 +32,7 @@
 
 # pour etudiant 
 
-``TYPE=Ethernet`
+`TYPE=Ethernet`
 `BOOTPROTO=static`
 `IPADDR=10.1.1.10`
 `NETMASK=255.255.255.0`
